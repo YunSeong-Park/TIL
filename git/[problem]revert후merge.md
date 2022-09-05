@@ -10,7 +10,9 @@
 
 1.  커밋는 변화량을 담고 있다.
 2.  merge commit revert는 merge 자체를 제거하는 것이 아니라 merge로 발생된 변화를 없애는 변화는 적용하는 것이다.
+
     실험으로 다음과 같은 결과도 확인 할 수 있었다.
+
     1. B브랜치를 A브랜치에 merge (m commit)
     2. (m commit) 을 revert
     3. A 브랜치르를 B브랜치에 merge
