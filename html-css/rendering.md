@@ -117,3 +117,24 @@ bstyle.fontSize = "2em"; // reflow, repaint
 // new DOM element - reflow, repaint
 document.body.appendChild(document.createTextNode("dude!"));
 ```
+
+몇몇 reflow는 더 많은 비용이 발생합니다.
+
+아래 두 상황을 예로 들면,
+
+- body 의 직계 자손인 node를 조작한다면, 다른 많은 node들이 유효하게 사용할 수 있습니다.
+- 페이지 상단 div에 확장하는 애니메이션을 적용하고 나머지 부분을 아래로 밀어내는 경우 비용이 많이 듭니다.
+
+## Browsers are smart(브라우저 동작 방식)
+
+렌더트리의 변경으로 유발되는 reflows 와 repaints는 많은 비용이 들기 때문에, 브라우저는 이 비용을 최대한 줄이고자 합니다.
+
+rendering 비용 줄이기 전략
+
+### 1. 일을 하지 않거나 지연시키기
+
+브라우저는 스크립트로 부터 받은 DOM 변경 사항들의 queue를 설정하고 일괄적으로 수행합니다. 이렇게 하므로써 한 번의 reflow로 여러 변경 사항을 적용할 수 있습니다.
+
+브라우저는 대기 중인 변경 사항이 일정 수에 도달하거나 시간이 충분히 경과하면 이를 flush 합니다.
+
+- flush: queue를 비우고 DOM 변경사항들을 일괄적으로 적용시키는 것으로 보임
