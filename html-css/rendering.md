@@ -138,3 +138,72 @@ rendering 비용 줄이기 전략
 브라우저는 대기 중인 변경 사항이 일정 수에 도달하거나 시간이 충분히 경과하면 이를 flush 합니다.
 
 - flush: queue를 비우고 DOM 변경사항들을 일괄적으로 적용시키는 것으로 보임
+
+하지만 즉시 flush를 일으켜서 reflow의 최적화를 막는 script가 있습니다. 이 것은 style information을 요청할 때 발생합니다.
+
+1. offsetTop, offsetLeft, offsetWidth, offsetHeight
+2. scrollTop/Left/Width/Height
+3. clientTop/Left/Width/Height
+4. getComputedStyle
+
+위 요청들은 결구 ㄱ노드에 스타일 정보를 요청하는 것이고, 요청할 때마다 브라우저는 가장 최신의 값을 제공해야합니다. 그렇기 때문에 모든 변경사항을 적용하고 리플로우해야 합니다.
+
+예를 들어, 다음과 같이 (루프에서) style을 가져와서 적용하는 것은 좋지 않습니다.
+
+```ts
+el.style.left = el.offsetLeft + 10 + "px";
+```
+
+## Repaints/ Reflow 최소화하기
+
+repaints/reflows으로 인한 UX에 부정적인 영향을 줄이기 위한 단순한 전략은 reflow/ repaints을 줄이고 스타일 정보 요청을 줄이는 것입니다.
+
+### 개별적으로 하나하나씩 style을 수정하지 마세요.
+
+정적인 스타일을 관리할 떄는 className을 사용하고, 동적인 스타일을 관리할 떄는 cssText를 사용하세요.
+
+```ts
+// bad
+var left = 10,
+  top = 10;
+el.style.left = left + "px";
+el.style.top = top + "px";
+
+// better
+el.className += " theclassname";
+
+// or when top and left are calculated dynamically...
+
+// better
+el.style.cssText += "; left: " + left + "px; top: " + top + "px;";
+```
+
+### DOM 변경 사항을 일괄적으로 처리하고 'offline'으로 처리하세요.
+
+offline은 DOM tree위에서 실시간으로 수정사항을 적용하지 말라는 의미입니다.
+
+- documentFragment를 사용하여 일시적인 변화를 보관하세요.
+- 업데이트하려는 node를 복제하고 복사본에서 작업한 다음 원본을 업데이트된 복제로 교체하세요.
+- display none으로 으로 요소를 숨김 => 100개의 변경 수행 => display 복원
+- 계산된 스타일을 과도하게 요구하지마세요.계산된 결과 값으로 작업해야하는 경우는 한 번 가져와서 로컬 var에 캐시하고 로컬 복사본으로 작업하세요.
+
+```ts
+// no-no!
+for (big; loop; here) {
+  el.style.left = el.offsetLeft + 10 + "px";
+  el.style.top = el.offsetTop + 10 + "px";
+}
+
+// better
+var left = el.offsetLeft,
+  top = el.offsetTop;
+esty = el.style;
+for (big; loop; here) {
+  left += 10;
+  top += 10;
+  esty.left = left + "px";
+  esty.top = top + "px";
+}
+```
+
+- 대부분의 경우, render tree를 변경하고 재검증이 필요한 부분에 대해 생각해야합니다. 예를 들면 body의 자식 element에 absolute positioning 사용한다고 하면, reflow 시 다른 대부분의 node의 영향을 받지 않을 것입니다.
