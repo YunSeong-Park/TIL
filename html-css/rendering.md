@@ -207,3 +207,14 @@ for (big; loop; here) {
 ```
 
 - 대부분의 경우, render tree를 변경하고 재검증이 필요한 부분에 대해 생각해야합니다. 예를 들면 body의 자식 element에 absolute positioning 사용한다고 하면, reflow 시 다른 대부분의 node의 영향을 받지 않을 것입니다.
+
+## 도구
+
+브라우저의 rendering, painting 을 시각적으로 확인할 수 있는 도구가 있습니다.
+
+- MozAfterPaint: repaints 만 확인 할 수 있음.
+- SpeedTracer: webkit 용, reflows, repaints 확인 가능
+
+## 예시
+
+restyle(render tree를 변경하지 않고 layout에 영향을 주지 않는 변경)과 reflow 사이의 차이점을 확인해 보겠습니다.
