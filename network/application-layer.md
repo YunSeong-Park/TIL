@@ -104,3 +104,11 @@ http 는 stateless이기 때문에 서버는 이전 연결을 기억하지 않�
 1. client가 server에 처음 request한다.
 2. server는 식별자 cookie를 생성해 response에 첨부하여 client에 제공한다.
 3. client는 cookie를 가지고 있고 다음 request에 cookie를 첨부한다.
+4. servers는 client을 식별하여 제공하는 objects을 변경할 수 있다.
+
+## SMTP(simple mail transfer protocol)
+
+http는 client가 server로부터 데이터를 fetch해 오는 개념 이지만,
+SMTP는 sender - sender server - receiver server 로 데이터를 밀어 넣는 개념이다.
+
+receiver server - receiver는 receiver가 데이터를 요청해야하기 때문에 다른 프로토콜이 사용된다.(ex POP, IMAP)
