@@ -109,6 +109,45 @@ http 는 stateless이기 때문에 서버는 이전 연결을 기억하지 않�
 ## SMTP(simple mail transfer protocol)
 
 http는 client가 server로부터 데이터를 fetch해 오는 개념 이지만,
-SMTP는 sender - sender server - receiver server 로 데이터를 밀어 넣는 개념이다.
+SMTP는 sender - sender server - receiver server 로 데이터를 push하는 개념이다.
 
 receiver server - receiver는 receiver가 데이터를 요청해야하기 때문에 다른 프로토콜이 사용된다.(ex POP, IMAP)
+
+## Socket
+
+### 정의
+
+네트워킹 프로그램이란 다른 컴퓨터의 process와 message를 주고 받는 프로그램이다.
+
+소켓은 application이 다른 컴퓨터의 process와 message를 주고 받을 수 있도록 OS에서 제공해주는 interface이다.
+
+### 종류
+
+- TCP socket
+- UDP socket
+
+### API
+
+- Creation & setup
+- Establishing a Connectio(TCP)
+- sending and Receiving Data
+- Tearing Down a Connection(TCP)
+
+### TCP Socket example
+
+os에서 제공하는 system call을 호출하여 구성
+
+Server
+
+1. TCP Server가 `socket()` 을 호출해여 socket을 생성
+2. `bind()` 호출하여 socket을 특정 port에 바인드
+3. `listen()` 호출하여 해당 소켓이 request을 기다린다는 것을 명시(?)
+4. `accept()` 을 호출하여 request가 오기 까지 blocking 하여 대기
+
+Client
+
+5.  `soket()` 생성
+6.  `connect()` 로 Server의 blocking을 풀고 가상적인 서킷을 생성함(Server 와 three-way handshaking)
+7.  `write()` 소켓에 request 정보를 입력하여 request를 보냅
+
+- 왜 Client는 `bind()`로 포트를 바인딩 하지 않는가? Client의 request, Server의 response로 이루어지기 때문
