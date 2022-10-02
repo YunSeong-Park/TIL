@@ -151,3 +151,65 @@ Client
 7.  `write()` 소켓에 request 정보를 입력하여 request를 보냅
 
 - 왜 Client는 `bind()`로 포트를 바인딩 하지 않는가? Client의 request, Server의 response로 이루어지기 때문
+
+## DNS (Domain Name Service)
+
+Domain Name(`www.naver.com`)을 통해 IP address을 얻어야 서버에 접속이 가능하다.
+
+DNS는 Domain Name과 IP address를 mapping 해준다.
+
+### DNS 구조 필요성
+
+하나의 서버에서 모든 Domain Name과 Ip address를 관리한다면 여러가지 문제가 발생한다.
+
+1. 속도 문제: 전세계의 모든 Domain Name을 저장하면 검색 시간이 걸린다.
+2. 안정성 문제: 하나의 서버가 다운 되면 전세계 DNS가 마비된다.
+
+### DNS 구조: 분산화(distributed), 계층화(hierarchy) database
+
+- Root Domain Server: DNS 구조의 root 하위 top-level Domain Server의 IP address를 라우팅해준다.
+- top-level Domain Server: `.com`, `.kr`, `.co.kr` 과 같이 본인에게 소속된 도메인 IP address를 라우팅해준다.
+- authoritative Domain Server: 네트워크를 가지고 있는 모든 기관은 Authoritative Domain Server를 보유하고 있다. 이 서버에서 본인 내부에 hostName, IP address를 관리한다.
+
+#### Domain과 host
+
+- hanyang.ac.kr: 한양 대학교의 네트워크 이름을 의미함(Domain)
+- www.hanyang.ac.kr: 한양 대학교 네트워크에 속한 host의 이름을 의미함
+
+#### DNS records
+
+```ts
+type A = {
+  name: host name;
+  value: IP address;
+  type: a;
+  TTL: time
+}
+
+type NS = {
+  name: domain name;
+  value: host name; // 해당 도메인의 authoritative domain server의 host name
+  type: NS;
+  TTL: time
+}
+```
+
+#### Local Domain Server
+
+내트워크 내에 각각 Local Domain Server를 두어 존재하는 domain name/ host name 을 캐싱해두어 사용함.
+
+ex) 한양대학교 네트워크 내의 컴퓨터에서 www.naver.com에 접속한다면
+
+1. 한양대학교 local Domain Server에 www.naver.com의 ip를 요청함
+2. local Domain Server에 www.naver.com IP가 있다면 바로 반환하고 그렇지 않다면 관리하고 있는 도메인 네임(ex naver.com, .com) 중 있는 IP 주소로 요청을 해 재귀적으로 IP 주소를 얻어냄
+
+TTL: Local Doamin Server는 일종의 캐시 서버로 볼 수 있는데 outdated 정보를 가지고 있을 수 있다. 이런 문제를 해결하기위해 DNS records에 TTL(Time to Leave)를 두어 기한이 될 떄마다 records를 삭제한다.
+
+### DNS와 UDP
+
+DNS는 UDP를 사용한다. 이는 직관적 이상하게 느껴질 수 있다.
+왜냐하면 server host의 ip주소는 손실 없이 안정성을 보장해야하는 것 처럼 느껴지기 때문이다.
+
+그럼에도 DNS가 UDP 통신을 사용하는 이유는 다음과 같다.
+
+- 하나의 DNS records는 40byte이다. 패킷이 손실되더라도 40byte의 정보만 손실되고 요청을 다시 보내면된다. (50kb 요청 중 패킷 하나가 손실되면 50kb을 전부 다시 패치해야한다.)
