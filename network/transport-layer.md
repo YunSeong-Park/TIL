@@ -76,3 +76,41 @@ sender에서 ACK 응답을 일정 시간 기다리고 시간이 넘어가면 유
 ACK 응답이 유실될 경우 receiver는 중복된 packet을 받는데 이를 버린다.
 
 - 위 예제는 패킷 하나, 하나 보내기 때문에 비효율적이다. 실제 TCP는 pipelining으로 패킷을 한번에 보내고 ACK응답도 한번에 보낸다.
+
+## TCP
+
+### 특징
+
+- reliable, in-order byte stream
+- point-to-point: 2개의 host가 통신함.
+- pipelined: TCP congestion and flow control set window size
+- full duplex data: 양방향 통신, MMS: maximum segment size
+
+### TCP segment structure
+
+- header
+  - source port
+  - dest port
+  - sequence number
+  - acknowledgement number
+  - checksum
+  - window size: receiver가 받을 수 있는 maximum data 크기
+
+### send burffer/ receive burffer
+
+send burffer: sender측에서 송신한 segment들을 가지고 있고 응답 받은 acknowledgement number, window size 등을 참고 송신해야할 segment를 관리 => 안정성 보장
+
+receive burffer: receiver 측에서 받는 데이터를 sequence number에 맞게 정렬하여 들고 있음. => 순서 보장
+
+### RTT
+
+```
+timeoutInterval = RTT + safety margin
+```
+
+timeoutInterval: sender 측에서 패킷이 유실됐는지 판단하는 기준 시간
+RTT: 데이터가 왕복하는 시간(queueing delay 떄문에 일정하지 않음)
+
+### Duplicate ACK
+
+중복된 ACK를 3번 받으면 timer가 지나기 전이라도 packet이 유실됐다고 판단하고 다시 데이터를 보낸다.
