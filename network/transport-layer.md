@@ -156,3 +156,20 @@ receive buffer의 남은 공간이 maximum segment size보다 작은 경우 남�
 ### Delay ACK
 
 다음 세그먼트를 일정 시간 기다린 후 ACK을 보낸다.
+
+### Connection Management
+
+데이터를 교환하기 이전에 각 host는 다음과 같은 작업을 마쳐야 한다.
+
+1.  receive queue, sender queue를 생성하여 데이터를 전송/수신할 준비
+2.  상대편의 초기 squence number 얻기
+
+#### 3way-handshake
+
+connection을 하기 위해선 총 3회 segment를 교환한다.
+
+각각 상대편의 초기 squence number를 얻고 상대방이 준비됐는지 확인해야한는데 최소 3번의 교환이 필요하다.
+
+1. client가 server에 squence number를 송신
+2. server가 client의 squnce number를 확인하고 connection 준비를 마치고 server의 squence number를 송신
+3. client가 server의 squence number를 확인 후 connection 준비를 마치고 준비가 됐다는 사실을 server에 알림
