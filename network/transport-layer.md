@@ -88,21 +88,27 @@ ACK 응답이 유실될 경우 receiver는 중복된 packet을 받는데 이를 
 
 ### TCP segment structure
 
+TCP header를 줄이면 한번에 담을 수 있는 데이터의 량이 커지기 때문에 header를 최소화하는 것이 중요하다.
+
 - header
   - source port
   - dest port
   - sequence number
   - acknowledgement number
   - checksum
-  - window size: receiver가 받을 수 있는 maximum data 크기
+  - window size: receiver가 한번에 받을 수 있는 maximum segment의 크기(flow control)
 
-### send burffer/ receive burffer
+### reliable transfet
+
+#### send burffer/ receive burffer
+
+각 TCP 통신은 sender/ receiver를 가리지 않기 때문에 TCP는 2개의 burffer를 가진다.
 
 send burffer: sender측에서 송신한 segment들을 가지고 있고 응답 받은 acknowledgement number, window size 등을 참고 송신해야할 segment를 관리 => 안정성 보장
 
 receive burffer: receiver 측에서 받는 데이터를 sequence number에 맞게 정렬하여 들고 있음. => 순서 보장
 
-### RTT
+#### RTT
 
 ```
 timeoutInterval = RTT + safety margin
@@ -111,6 +117,42 @@ timeoutInterval = RTT + safety margin
 timeoutInterval: sender 측에서 패킷이 유실됐는지 판단하는 기준 시간
 RTT: 데이터가 왕복하는 시간(queueing delay 떄문에 일정하지 않음)
 
-### Duplicate ACK
+#### Duplicate ACK
 
 중복된 ACK를 3번 받으면 timer가 지나기 전이라도 packet이 유실됐다고 판단하고 다시 데이터를 보낸다.
+
+### flow control
+
+receive buffer의 남은 공간을 sender에게 보내, receiver가 감당할 수 있는 량의 data만 보내도록 하는 것
+
+#### 시나리오
+
+1. sender가 receiver에게 segment를 송신한다.
+2. receiver가 segemnt를 받고 이를 receive buffer에 적재한다.
+3. receive buffer의 남은 공간을 sender에게 보낸다.
+
+#### corner case
+
+receive buffer가 가득 찼다면?
+sender은 최소 단위의 데이터만 담아 주기적으로 송신한다.
+
+### Nagle's algorithm \*\*\*
+
+- 하나의 segment는 500byte 정도의 데이터를 담을 수 있다.
+- application layer에서 데이터가 지연되며 넘어올 수 있다.
+- 이런 segment에 항상 데이터를 채우기까지 기다린 후 송신해야하나?
+
+아래 두 상황일 때 송신한다.
+
+1. segment에 데이터를 모두 채웠을 떄
+2. 이전 segment의 ACK응답을 받았을 떄
+
+결과적으로 app program이 빠를 수록 segment size가 커진다. network 속도가 빠를 수록 segment size가 작아 진다.
+
+### Clark's solution
+
+receive buffer의 남은 공간이 maximum segment size보다 작은 경우 남은 공간을 0으로 보낸다.
+
+### Delay ACK
+
+다음 세그먼트를 일정 시간 기다린 후 ACK을 보낸다.
