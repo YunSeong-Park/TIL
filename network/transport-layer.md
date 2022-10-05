@@ -96,7 +96,7 @@ TCP header를 줄이면 한번에 담을 수 있는 데이터의 량이 커지�
   - sequence number
   - acknowledgement number
   - checksum
-  - window size: receiver가 한번에 받을 수 있는 maximum segment의 크기(flow control)
+  - window size: receiver가 한번에 받을 수 있는 최대 데이터 크기(flow control)
 
 ### reliable transfet
 
@@ -136,7 +136,9 @@ receive buffer의 남은 공간을 sender에게 보내, receiver가 감당할 �
 receive buffer가 가득 찼다면?
 sender은 최소 단위의 데이터만 담아 주기적으로 송신한다.
 
-### Nagle's algorithm \*\*\*
+### 기타 문제 해결
+
+#### Nagle's algorithm \*\*\*
 
 - 하나의 segment는 500byte 정도의 데이터를 담을 수 있다.
 - application layer에서 데이터가 지연되며 넘어올 수 있다.
@@ -149,11 +151,11 @@ sender은 최소 단위의 데이터만 담아 주기적으로 송신한다.
 
 결과적으로 app program이 빠를 수록 segment size가 커진다. network 속도가 빠를 수록 segment size가 작아 진다.
 
-### Clark's solution
+#### Clark's solution
 
 receive buffer의 남은 공간이 maximum segment size보다 작은 경우 남은 공간을 0으로 보낸다.
 
-### Delay ACK
+#### Delay ACK
 
 다음 세그먼트를 일정 시간 기다린 후 ACK을 보낸다.
 
@@ -173,3 +175,24 @@ connection을 하기 위해선 총 3회 segment를 교환한다.
 1. client가 server에 squence number를 송신
 2. server가 client의 squnce number를 확인하고 connection 준비를 마치고 server의 squence number를 송신
 3. client가 server의 squence number를 확인 후 connection 준비를 마치고 준비가 됐다는 사실을 server에 알림
+
+### congestion control
+
+window size는 네트워크 상황과 receiver가 받아드릴 수 있는 최대 크기에 따라 결정된다.
+
+최근 환경에서는 receiver의 용량이 부족해서 데이터를 받지 못하는 경우보다 네트워크 상황이 나빠 전송이 느린 경우가 더 많다.
+
+#### congestion
+
+network에 너무 많은 데이터가 너무 빨리 보내지는 상황
+
+flow control 처럼 network의 상황을 router들이 알려주기엔 router에 부하가 너무 커진다. 따라서 congestion로 부터 유발되는 현상을 바탕으로 유추하는 수 밖에 없다.
+
+##### 현상
+
+- packet loss
+- long delay
+
+#### TCP 신뢰성과 congestion
+
+TCP는 신뢰성을 보장하기 위해 packet loss가 발생할 때 해당 packet을 포함해 다시 데이터를 전송한다. 하지만, packet loss가 발생했다는 것은 경로 중 router에 많은 전송 요청으로 인해 queue가 가득 찼다는 것을 의미한다. 따라서 sender측에서 무작정 네트워크 상황을 고려하지 않고 계속 데이터를 재전송 한다면 상황은 더 악화될 것이다.
