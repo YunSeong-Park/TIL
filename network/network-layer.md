@@ -50,7 +50,12 @@ forwarding table에 모든 IP Address가 하나하나 입력돼 있다면 forwar
 
 ## NAT: network address translation
 
-router에서 client IP Adress를 변환해서 IP Adress부족을 해결(강의가 짤려 있어서 따로 공부 필요)
+여러 장비가 하나의 IP를 공유하는 것
+
+router에서 client IP Adress를 변환해서 IP Adress부족을 해결
+
+1. 같은 IP Address를 공유하고자 하는 host들을 NAT에 안쪽에 연결
+2. NAT 안쪽에 연결된 host들은 사설 IP 라 불리는 특별히 지정된 범위의 주소를 사용한다. (이 IP Address는 다른 NAT의 host와 중복이 가능함)
 
 ## DHCP(Dynamic Host Configureation Protocol)
 
