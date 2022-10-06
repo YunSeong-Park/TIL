@@ -24,10 +24,23 @@ packet의 overhead = 40 bytes = 20 bytes of TCP + 20 bytes of IP
   - head len
   - time to live: router를 하나 지날 떄 마다 -1이 되고 0이 되면 drop
   - upper layer: TCP인지 UDP인지 구분
+  - 16-bit identifier
+  - flags
   - fragment offset
+  - checksum
   - source address
   - destination address
   - options: any
+
+### IP fragmentation
+
+link 계층에서 감당할 수 있는 용량이 1000 byte인데 패킷의 크기가 2700 byte일 때 이 패킷을 3개로 쪼개 송신한다.
+
+이 쪼개진 패킷을 식별하기 위해 존재하는 헤더가 필드가 아래와 같다.
+
+- 16-bit identifier
+- flags
+- fragment offset
 
 ## IP Address(IPv4)
 
