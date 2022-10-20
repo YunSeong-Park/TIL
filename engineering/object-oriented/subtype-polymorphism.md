@@ -1,28 +1,118 @@
-# 객체의 다형성
+# 객체지향에서 서브타입 다형성
 
 ## 개요
 
 다형성이란 프로그램 언어의 각 요소들(상수, 변수, 식, 객체, 메소드)가 다양한 type에 속하는 것이 허가되는 성질을 가리킨다.
 
-[overloading](https://en.wikipedia.org/wiki/Ad_hoc_polymorphism)과 같이 같은 이름을 가진 메소드가 인자의 수나 자료형에 따라 분리 되는 것 또한 다형성의 한 종류라고 할 수 있다.
+다음과 같은 종류가 있다.
 
-이 문서에서 다루는 객체 지향에서 메시지가 동일해도 수신한 객체의 타입에 따라 실제로 수행되는 행동이 달라지는 서브타입 다형성이다.
+- Ad hoc polymorphism: (overloading)
+- Parametric polymorphism: (generic)
+- Subtype polymorphism
 
-## 소개
+흔히 객체지향을 논할 때 나오는 다형성은 subtype polymorphism에서 비롯된 개념으로 보인다.
 
-`메시지가 동일해도 수신한 객체의 타입에 따라 실제로 수행되는 행동이 달라진다.`
+이 문서에서 객체지향에서 subtype polymorphism에 대해서 정리해보고자 한다.
 
-위 문장을 보면 굳이 설명이 필요한가? 싶을 정도로 아주 단순하게 보인다.
+## 개념
 
-그렇다면 아래 normal과 special 객체는 서브타입 다형성을 지킨다고 볼 수 있을까?
+subtype polymorphism은 `상위타입(supertype)의 함수가 하위타입(subtype)에서도 존재하는 것`이다.
+
+### 예시
+
+아래 코드는 Supertype interface를 구현하는 Subtype class는 Supertype의 method를 모두 구현한다. 따라서 subtype polymorphism을 지킨다고 볼 수 있다.
+
+```ts
+interface Supertype {
+  run: () => void;
+}
+
+class Subtype implements Supertype {
+  constructor() {}
+  run() {
+    console.log("run");
+  }
+}
+```
+
+아래 코드는 subtype polymorphism을 지킨다고 볼 수 있을까?
 
 ```ts
 const normal = {
   console: () => console.log("normal"),
 };
+
 const special = {
   console: () => console.log("special"),
 };
 ```
 
-서브타입 다형성은 매우 단순
+아래 조건을 만족한다면, subtype polymorphism을 지켰다고 생각한다.
+
+- 코드 작성자가 console이라는 메시지를 처리하는 Logger라는 역할을 고려했다.
+- typeScript의 duck typing이라는 특징을 이용해 이를 생략했을 뿐이다.
+
+```ts
+interface Logger {
+  console: () => void;
+}
+const normal: Logger = {
+  console: () => console.log("normal"),
+};
+
+const special: Logger = {
+  console: () => console.log("special"),
+};
+```
+
+## 의미
+
+객체지향에서 이러한 subtype polymorphism을 도입한 이유는 뭘까? 나는 `동일한 메시지를 수신한 객체의 타입에 따라 다르게 수행하기 위해` 생각한다.
+
+예시에서 자세히 살펴보자.
+
+### 예시
+
+Animal interface를 구현하는 Human, Dog은 모두 `move()`라는 메소드를 가지고 있고, 호출할 때 객체의 타입을 신경 쓰지 않아도 된다.
+
+```ts
+interface Animal {
+  move: () => void;
+}
+
+class Human implements Animal {
+  constructor() {}
+  move() {
+    console.log("human move");
+  }
+}
+
+class Dog implements Animal {
+  constructor() {}
+  move() {
+    console.log("dog move");
+  }
+}
+
+const animals: Animal[] = [human, dog];
+
+animals.forEach((animal) => {
+  animal.move();
+});
+```
+
+이를 기반으로 객체 지향의 핵심 개념인 책임, 역할, 메세지의 개념이 정립된다.
+
+- 책임: 각 클래스가 구현해야하는 기능들
+
+  ex) Human, Dog class의 `move()`메소드
+
+- 역할: 책임들을 추상화한 것
+
+  ex) Animal
+
+- 메세지: 역할이 가진 기능을 수행하도록 요청하는 것
+
+  ex) animal move 라는 메시지를 보내면 실제 구현체의 `move()` 메소드를 호출한다.
+
+## 조건
