@@ -113,6 +113,45 @@ animals.forEach((animal) => {
 
 - 메세지: 역할이 가진 기능을 수행하도록 요청하는 것
 
-  ex) animal move 라는 메시지를 보내면 실제 구현체의 `move()` 메소드를 호출한다.
+  ex) animal에 move 라는 메시지를 보내면 실제 구현체의 `move()` 메소드를 호출한다.
 
 ## 조건
+
+`동일한 메시지를 수신한 객체의 타입에 따라 다르게 수행하기 위해`를 알맞게 적용하려면 다음과 같은 조건을 만족해야한다.
+
+1.  대체가능성(substitution)
+2.  내적일관성(internal identity)
+
+### 대체가능성(substitution)
+
+subtype 객체는 supertype으로 대체 가능하다.
+
+```ts
+const Worker = class {
+  run() {
+    console.log("working");
+  }
+  print() {
+    this.run();
+  }
+};
+
+// Overriding
+const HardWorker = class extends Worker {
+  run() {
+    console.log("HardWorking");
+  }
+};
+
+const worker: Worker = new HardWorker();
+
+console.log(worker instanceof Worker); // true. 대체가능성
+```
+
+### 내적일관성(internal identity)
+
+supertype으로 대체되더라도 생성 시 원본 객체를 유지한다.
+
+```ts
+worker.print(); // HardWorker의 print. 내적일관성
+```
