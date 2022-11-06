@@ -25,4 +25,4 @@ function MeasureExample() {
 }
 ```
 
-이를 통해 유추해보면 DOM node가 변경될 때마다 전달된 ref의 함수를 호출한다. 단 useRef는 호출돼도 컴포넌트를 render하지 않을 뿐이다.
+단 ref로 전달된 함수는 컴포넌트가 마운트 되거나, 언 마운트 될때만 호출된다. 때문에 실시간으로 변경되는 style을 가져와야 하는 경우는 [ResizeObserver](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver)를 사용해야합니다.
