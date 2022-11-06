@@ -8,9 +8,7 @@
 
 ## Store 소개
 
-```
-store는 component로 부터 state와 logic을 분리한 것이다.
-```
+> store는 component로 부터 state와 logic을 분리한 것이다.
 
 위 문장을 이해하기 위해선 `state`, `logic`, `분리`이 무엇을 의미하는 지 다시 생각해보아야 한다.
 
