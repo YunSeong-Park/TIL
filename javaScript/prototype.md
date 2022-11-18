@@ -10,12 +10,11 @@ clone 및 extends 할 수 있는 일반화된 객체를 사용합니다.
 
 ## Design and implementation
 
-```
-prototype 객체를 생성하고, 인스턴스를 합니다. JavaScript에서 객체는 수정가능하기 때문에 인스턴스에 새로운 method와 field를 추가할 수 있습니다.
-그렇게 수정된 인스턴스는 또 새로는 객체의 prototype이 될 수 있습니다. 유사한 객체를 많이 만들기 위해 클래스가 필요하지 않습니다.
-
-- Douglas Crockford
-```
+> prototype 객체를 생성하고, 인스턴스를 합니다. JavaScript에서 객체는 수정가능하기 때문에 인스턴스에 새로운 method와 field를 추가할 수 있습니다.
+>
+> 그렇게 수정된 인스턴스는 또 새로는 객체의 prototype이 될 수 있습니다. 유사한 객체를 많이 만들기 위해 클래스가 필요하지 않습니다.
+>
+> Douglas Crockford
 
 prototype 지지자들은 prototype-based programming이 다음과 같은 장점이 있다고 주장합니다.
 
