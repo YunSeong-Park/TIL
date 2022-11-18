@@ -24,6 +24,7 @@
 - [리액트와 선언형 프로그래밍](https://github.com/YunSeong-Park/TIL/blob/main/react/declarative.md)
 - [hooks 동작 방식](https://github.com/YunSeong-Park/TIL/blob/main/react/hooks_operation.md)
 - [DOM node 측정하기](https://github.com/YunSeong-Park/TIL/blob/main/react/measure-DOM-node.md)
+- [children 동작 정리](https://github.com/YunSeong-Park/TIL/blob/main/react/children.md)
 
 ### Mobx
 
