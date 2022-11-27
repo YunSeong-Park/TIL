@@ -27,7 +27,7 @@
 - [children 동작 정리](https://github.com/YunSeong-Park/TIL/blob/main/react/children.md)
 
 ### Mobx
-
+- [Mobx를 이용한 상태관리(작성중)](https://impossible-couch-0e7.notion.site/React-with-Mobx-febb9d87027e41c998a2a5468005f33f)
 - [reactivity 원리](https://impossible-couch-0e7.notion.site/Understanding-reactivity-6f17dc4be33a411993e4fb9aaf9c1f7f)
 
 ### Emotion
